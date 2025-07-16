@@ -138,7 +138,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "Write y
           className="p-2 hover:bg-gray-200 rounded text-sm"
           title="Quote"
         >
-          "
+          {'"'}
         </button>
         <button
           type="button"
@@ -197,7 +197,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "Write y
 
       {/* Preview hint */}
       <div className="bg-gray-50 border-t border-gray-300 p-2 text-xs text-gray-600">
-        Supports markdown formatting: **bold**, *italic*, `code`, > quotes, - lists, ## headings, links, and images
+        Supports markdown formatting: **bold**, *italic*, `code`, {'>'}quotes, - lists, ## headings, links, and images
       </div>
 
       {/* Image Dialog */}
