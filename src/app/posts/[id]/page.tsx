@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
 import Header from '@/components/Header';
 import VoteButtons from '@/components/VoteButtons';
@@ -45,6 +45,7 @@ interface Post {
 export default function PostDetail() {
   const { data: session } = useSession();
   const params = useParams();
+  const router = useRouter();
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -82,6 +83,14 @@ export default function PostDetail() {
         downvotes: newDownvotes,
       });
     }
+  };
+
+  const handleCategoryClick = (categorySlug: string, subcategorySlug?: string) => {
+    const params = new URLSearchParams();
+    params.set('category', categorySlug);
+    if (subcategorySlug) params.set('subcategory', subcategorySlug);
+    
+    router.push(`/?${params.toString()}`);
   };
 
   if (loading) {
@@ -131,6 +140,39 @@ export default function PostDetail() {
       <Header />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Breadcrumb Navigation */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+          <div className="flex items-center text-sm text-gray-600">
+            <button
+              onClick={() => router.push('/')}
+              className="hover:text-blue-600 transition-colors"
+            >
+              Home
+            </button>
+            <span className="mx-2">/</span>
+            <button
+              onClick={() => handleCategoryClick(post.category.slug)}
+              className="hover:text-blue-600 transition-colors"
+            >
+              {post.category.name}
+            </button>
+            {post.subcategory && (
+              <>
+                <span className="mx-2">/</span>
+                <button
+                  onClick={() => handleCategoryClick(post.category.slug, post.subcategory.slug)}
+                  className="hover:text-blue-600 transition-colors"
+                >
+                  {post.subcategory.name}
+                </button>
+              </>
+            )}
+            <span className="mx-2">/</span>
+            <span className="text-gray-900 font-medium truncate max-w-md">
+              {post.title}
+            </span>
+          </div>
+        </div>
         {/* Main Post */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           {/* Header */}

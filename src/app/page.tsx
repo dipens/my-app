@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import CategorySidebar from '@/components/CategorySidebar';
@@ -55,6 +56,8 @@ interface Category {
 
 export default function Home() {
   const { data: session } = useSession();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [posts, setPosts] = useState<Post[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,6 +68,16 @@ export default function Home() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Read URL parameters on mount
+  useEffect(() => {
+    if (mounted) {
+      const categoryParam = searchParams.get('category');
+      const subcategoryParam = searchParams.get('subcategory');
+      setSelectedCategory(categoryParam);
+      setSelectedSubcategory(subcategoryParam);
+    }
+  }, [mounted, searchParams]);
 
   useEffect(() => {
     if (mounted) {
@@ -103,6 +116,14 @@ export default function Home() {
   const handleCategoryFilter = (categorySlug: string | null, subcategorySlug: string | null = null) => {
     setSelectedCategory(categorySlug);
     setSelectedSubcategory(subcategorySlug);
+    
+    // Update URL parameters
+    const params = new URLSearchParams();
+    if (categorySlug) params.set('category', categorySlug);
+    if (subcategorySlug) params.set('subcategory', subcategorySlug);
+    
+    const newUrl = params.toString() ? `/?${params.toString()}` : '/';
+    router.push(newUrl);
   };
 
   if (!mounted) {
