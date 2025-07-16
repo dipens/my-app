@@ -1,13 +1,26 @@
-import NextAuth, { type NextAuthOptions } from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import GoogleProvider from 'next-auth/providers/google';
-import GitHubProvider from 'next-auth/providers/github';
-import FacebookProvider from 'next-auth/providers/facebook';
-import AzureADProvider from 'next-auth/providers/azure-ad';
-import bcrypt from 'bcryptjs';
 import { db } from '@/db';
 import { users } from '@/db/schema';
+import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
+import { type NextAuthOptions } from 'next-auth';
+import AzureADProvider from 'next-auth/providers/azure-ad';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import FacebookProvider from 'next-auth/providers/facebook';
+import GitHubProvider from 'next-auth/providers/github';
+import GoogleProvider from 'next-auth/providers/google';
+
+// Helper function to check if environment variables are set
+const isProviderConfigured = (
+  clientId: string | undefined,
+  clientSecret: string | undefined
+) => {
+  return (
+    clientId &&
+    clientSecret &&
+    clientId !== 'your-google-client-id' &&
+    clientSecret !== 'your-google-client-secret'
+  );
+};
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -50,23 +63,55 @@ export const authOptions: NextAuthOptions = {
         };
       },
     }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-    GitHubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-    }),
-    FacebookProvider({
-      clientId: process.env.FACEBOOK_CLIENT_ID!,
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
-    }),
-    AzureADProvider({
-      clientId: process.env.AZURE_AD_CLIENT_ID!,
-      clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
-      tenantId: process.env.AZURE_AD_TENANT_ID!,
-    }),
+    // Only add Google provider if environment variables are configured
+    ...(isProviderConfigured(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET
+    )
+      ? [
+          GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+          }),
+        ]
+      : []),
+    // Only add GitHub provider if environment variables are configured
+    ...(isProviderConfigured(
+      process.env.GITHUB_CLIENT_ID,
+      process.env.GITHUB_CLIENT_SECRET
+    )
+      ? [
+          GitHubProvider({
+            clientId: process.env.GITHUB_CLIENT_ID!,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+          }),
+        ]
+      : []),
+    // Only add Facebook provider if environment variables are configured
+    ...(isProviderConfigured(
+      process.env.FACEBOOK_CLIENT_ID,
+      process.env.FACEBOOK_CLIENT_SECRET
+    )
+      ? [
+          FacebookProvider({
+            clientId: process.env.FACEBOOK_CLIENT_ID!,
+            clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
+          }),
+        ]
+      : []),
+    // Only add Azure AD provider if environment variables are configured
+    ...(isProviderConfigured(
+      process.env.AZURE_AD_CLIENT_ID,
+      process.env.AZURE_AD_CLIENT_SECRET
+    )
+      ? [
+          AzureADProvider({
+            clientId: process.env.AZURE_AD_CLIENT_ID!,
+            clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
+            tenantId: process.env.AZURE_AD_TENANT_ID!,
+          }),
+        ]
+      : []),
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
