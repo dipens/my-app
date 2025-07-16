@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
 
 interface Post {
@@ -41,7 +42,16 @@ interface PostCardProps {
 }
 
 export default function PostCard({ post }: PostCardProps) {
+  const router = useRouter();
   const netScore = post.upvotes - post.downvotes;
+
+  const handleCategoryClick = (categorySlug: string, subcategorySlug?: string) => {
+    const params = new URLSearchParams();
+    params.set('category', categorySlug);
+    if (subcategorySlug) params.set('subcategory', subcategorySlug);
+    
+    router.push(`/?${params.toString()}`);
+  };
 
   return (
     <div className={`bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow ${
@@ -59,11 +69,21 @@ export default function PostCard({ post }: PostCardProps) {
             className="w-3 h-3 rounded-full"
             style={{ backgroundColor: post.category.color }}
           />
-          <span className="text-sm text-gray-600">{post.category.name}</span>
+          <button
+            onClick={() => handleCategoryClick(post.category.slug)}
+            className="text-sm text-gray-600 hover:text-blue-600 hover:underline transition-colors"
+          >
+            {post.category.name}
+          </button>
           {post.subcategory && (
             <>
               <span className="text-gray-400">•</span>
-              <span className="text-sm text-gray-600">{post.subcategory.name}</span>
+              <button
+                onClick={() => handleCategoryClick(post.category.slug, post.subcategory.slug)}
+                className="text-sm text-gray-600 hover:text-blue-600 hover:underline transition-colors"
+              >
+                {post.subcategory.name}
+              </button>
             </>
           )}
         </div>
