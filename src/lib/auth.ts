@@ -101,13 +101,6 @@ export const authOptions: NextAuthOptions = {
         if (dbUser[0]) {
           session.user.id = dbUser[0].id.toString();
           session.user.username = dbUser[0].username;
-          console.log('Session callback - setting user:', {
-            id: dbUser[0].id,
-            username: dbUser[0].username,
-            email: session.user.email
-          });
-        } else {
-          console.log('Session callback - no user found for email:', session.user.email);
         }
       }
       return session;

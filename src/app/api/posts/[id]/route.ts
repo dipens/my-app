@@ -7,10 +7,11 @@ import { eq } from 'drizzle-orm';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const postId = parseInt(params.id);
+    const { id } = await params;
+    const postId = parseInt(id);
 
     const postData = await db
       .select({
@@ -69,18 +70,17 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
-    console.log('PUT /api/posts/[id] - Full session:', JSON.stringify(session, null, 2));
     
     if (!session?.user?.id) {
-      console.log('No session or user ID found');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const postId = parseInt(params.id);
+    const { id } = await params;
+    const postId = parseInt(id);
     const {
       title,
       content,
@@ -123,14 +123,6 @@ export async function PUT(
       return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
-    // Debug logging
-    console.log('Session user:', {
-      id: session.user.id,
-      email: session.user.email,
-      username: (session.user as any).username
-    });
-    console.log('Post author:', existingPost[0].author);
-    
     // Check authorization by both ID and username for redundancy
     const sessionUserId = parseInt(session.user.id);
     const sessionUsername = (session.user as any).username;
@@ -140,14 +132,7 @@ export async function PUT(
     const isAuthorizedByUsername = sessionUsername && existingPost[0].author?.username === sessionUsername;
     const isAuthorizedByEmail = sessionEmail && existingPost[0].author?.email === sessionEmail;
     
-    console.log('Authorization checks:', {
-      byId: isAuthorizedById,
-      byUsername: isAuthorizedByUsername,
-      byEmail: isAuthorizedByEmail
-    });
-    
     if (!isAuthorizedById && !isAuthorizedByUsername && !isAuthorizedByEmail) {
-      console.log('Authorization failed - user is not the author');
       return NextResponse.json(
         { error: 'You can only edit your own posts' },
         { status: 403 }
@@ -196,7 +181,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -204,7 +189,8 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const postId = parseInt(params.id);
+    const { id } = await params;
+    const postId = parseInt(id);
 
     const existingPost = await db
       .select()
