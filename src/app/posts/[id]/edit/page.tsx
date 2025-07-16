@@ -92,7 +92,7 @@ export default function EditPost() {
       setPost(fetchedPost);
 
       // Check if user owns this post
-      if (session?.user?.email !== fetchedPost.author.username) {
+      if ((session?.user as any)?.username !== fetchedPost.author.username) {
         setError('You can only edit your own posts');
         return;
       }
