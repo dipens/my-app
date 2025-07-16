@@ -9,13 +9,22 @@
     "lint": "next lint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:push": "dotenv -e .env.local -- drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:seed": "node run-seed.js",
+    "db:setup": "./start-database.sh",
+    "db:reset": "dotenv -e .env.local -- drizzle-kit push --force && npm run db:seed",
+    "db:check": "node check-database.js"
   },
   "dependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/pg": "^8.15.4",
+    "bcryptjs": "^3.0.2",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.2.0",
     "drizzle-orm": "^0.44.3",
     "next": "15.4.1",
+    "next-auth": "^4.24.11",
     "pg": "^8.16.3",
     "react": "19.1.0",
     "react-dom": "19.1.0"
@@ -26,10 +35,13 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cross-env": "^7.0.3",
+    "dotenv-cli": "^8.0.0",
     "drizzle-kit": "^0.31.4",
     "eslint": "^9",
     "eslint-config-next": "15.4.1",
     "tailwindcss": "^4",
+    "tsx": "^4.20.3",
     "typescript": "^5"
   }
 }
