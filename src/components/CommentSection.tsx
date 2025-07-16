@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { formatDistanceToNow } from 'date-fns';
 import VoteButtons from './VoteButtons';
+import RichTextEditor from './RichTextEditor';
+import MarkdownRenderer from './MarkdownRenderer';
 
 interface Comment {
   id: number;
@@ -168,9 +170,9 @@ export default function CommentSection({ postId }: CommentSectionProps) {
 
           {/* Comment Content */}
           <div className="mb-3">
-            <p className="text-gray-700 whitespace-pre-wrap">
-              {comment.content}
-            </p>
+            <div className="text-gray-700">
+              <MarkdownRenderer content={comment.content} />
+            </div>
           </div>
 
           {/* Comment Actions */}
@@ -202,12 +204,10 @@ export default function CommentSection({ postId }: CommentSectionProps) {
               onSubmit={e => handleSubmitReply(e, comment.id)}
               className="mt-4"
             >
-              <textarea
+              <RichTextEditor
                 value={replyText}
-                onChange={e => setReplyText(e.target.value)}
+                onChange={setReplyText}
                 placeholder="Write your reply..."
-                rows={3}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               />
               <div className="flex justify-end space-x-2 mt-2">
                 <button
@@ -251,12 +251,10 @@ export default function CommentSection({ postId }: CommentSectionProps) {
       {/* Add Comment Form */}
       {session ? (
         <form onSubmit={handleSubmitComment} className="mb-8">
-          <textarea
+          <RichTextEditor
             value={newComment}
-            onChange={e => setNewComment(e.target.value)}
+            onChange={setNewComment}
             placeholder="Share your thoughts about this deal..."
-            rows={4}
-            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
           <div className="flex justify-end mt-3">
             <button

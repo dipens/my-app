@@ -73,7 +73,10 @@ export async function PUT(
 ) {
   try {
     const session = await getServerSession(authOptions);
+    console.log('PUT /api/posts/[id] - Full session:', JSON.stringify(session, null, 2));
+    
     if (!session?.user?.id) {
+      console.log('No session or user ID found');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -90,9 +93,29 @@ export async function PUT(
       isOnline,
     } = await request.json();
 
+    // Get post with author information for better comparison
     const existingPost = await db
-      .select()
+      .select({
+        id: posts.id,
+        title: posts.title,
+        content: posts.content,
+        authorId: posts.authorId,
+        categoryId: posts.categoryId,
+        subcategoryId: posts.subcategoryId,
+        dealUrl: posts.dealUrl,
+        dealPrice: posts.dealPrice,
+        originalPrice: posts.originalPrice,
+        storeName: posts.storeName,
+        isOnline: posts.isOnline,
+        excerpt: posts.excerpt,
+        author: {
+          id: users.id,
+          username: users.username,
+          email: users.email,
+        },
+      })
       .from(posts)
+      .leftJoin(users, eq(posts.authorId, users.id))
       .where(eq(posts.id, postId))
       .limit(1);
 
@@ -100,9 +123,33 @@ export async function PUT(
       return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
-    if (existingPost[0].authorId !== parseInt(session.user.id)) {
+    // Debug logging
+    console.log('Session user:', {
+      id: session.user.id,
+      email: session.user.email,
+      username: (session.user as any).username
+    });
+    console.log('Post author:', existingPost[0].author);
+    
+    // Check authorization by both ID and username for redundancy
+    const sessionUserId = parseInt(session.user.id);
+    const sessionUsername = (session.user as any).username;
+    const sessionEmail = session.user.email;
+    
+    const isAuthorizedById = existingPost[0].authorId === sessionUserId;
+    const isAuthorizedByUsername = sessionUsername && existingPost[0].author?.username === sessionUsername;
+    const isAuthorizedByEmail = sessionEmail && existingPost[0].author?.email === sessionEmail;
+    
+    console.log('Authorization checks:', {
+      byId: isAuthorizedById,
+      byUsername: isAuthorizedByUsername,
+      byEmail: isAuthorizedByEmail
+    });
+    
+    if (!isAuthorizedById && !isAuthorizedByUsername && !isAuthorizedByEmail) {
+      console.log('Authorization failed - user is not the author');
       return NextResponse.json(
-        { error: 'Unauthorized to edit this post' },
+        { error: 'You can only edit your own posts' },
         { status: 403 }
       );
     }

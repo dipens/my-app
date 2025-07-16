@@ -178,12 +178,12 @@ export default function PostDetail() {
                   onClick={() =>
                     handleCategoryClick(
                       post.category.slug,
-                      post.subcategory.slug
+                      post.subcategory?.slug
                     )
                   }
                   className="hover:text-blue-600 transition-colors"
                 >
-                  {post.subcategory.name}
+                  {post.subcategory?.name}
                 </button>
               </>
             )}
@@ -236,7 +236,7 @@ export default function PostDetail() {
                 >
                   {post.isOnline ? 'Online Deal' : 'In-Store Deal'}
                 </span>
-                {session?.user?.email === post.author.username && (
+                {session?.user?.username === post.author.username && (
                   <button
                     onClick={() => router.push(`/posts/${post.id}/edit`)}
                     className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"

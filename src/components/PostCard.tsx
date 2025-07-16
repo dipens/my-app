@@ -91,11 +91,14 @@ export default function PostCard({ post }: PostCardProps) {
               <span className="text-gray-400">•</span>
               <button
                 onClick={() =>
-                  handleCategoryClick(post.category.slug, post.subcategory.slug)
+                  handleCategoryClick(
+                    post.category.slug,
+                    post.subcategory?.slug
+                  )
                 }
                 className="text-sm text-gray-600 hover:text-blue-600 hover:underline transition-colors"
               >
-                {post.subcategory.name}
+                {post.subcategory?.name}
               </button>
             </>
           )}
