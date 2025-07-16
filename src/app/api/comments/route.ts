@@ -1,9 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
 import { db } from '@/db';
-import { comments, users, posts } from '@/db/schema';
-import { eq, and, isNull, desc } from 'drizzle-orm';
+import { comments, posts, users } from '@/db/schema';
+import { authOptions } from '@/lib/auth';
+import { CommentWithAuthor } from '@/types';
+import { and, desc, eq } from 'drizzle-orm';
+import { getServerSession } from 'next-auth/next';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
@@ -105,13 +106,17 @@ export async function POST(request: NextRequest) {
       .returning();
 
     // Update post comment count
+    const commentCountResult = await db
+      .select()
+      .from(comments)
+      .where(eq(comments.postId, postId));
+
+    const commentCount = commentCountResult.length;
+
     await db
       .update(posts)
       .set({
-        commentCount: db
-          .select({ count: comments.id })
-          .from(comments)
-          .where(eq(comments.postId, postId)),
+        commentCount,
       })
       .where(eq(posts.id, postId));
 
@@ -128,24 +133,46 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function organizeComments(comments: any[]): any[] {
-  const commentMap = new Map();
-  const rootComments: any[] = [];
+function organizeComments(
+  comments: Array<{
+    id: number;
+    content: string;
+    parentId: number | null;
+    upvotes: number;
+    downvotes: number;
+    createdAt: string;
+    updatedAt: string;
+    author: {
+      id: number;
+      username: string;
+      displayName: string;
+      avatar: string | null;
+    } | null;
+  }>
+): CommentWithAuthor[] {
+  const commentMap = new Map<number, CommentWithAuthor>();
+  const rootComments: CommentWithAuthor[] = [];
 
   // First pass: create comment objects with replies array
   comments.forEach(comment => {
-    commentMap.set(comment.id, { ...comment, replies: [] });
+    commentMap.set(comment.id, {
+      ...comment,
+      author: comment.author || null,
+      replies: [],
+    });
   });
 
   // Second pass: organize into tree structure
   comments.forEach(comment => {
     const commentWithReplies = commentMap.get(comment.id);
-    if (comment.parentId === null) {
-      rootComments.push(commentWithReplies);
-    } else {
-      const parent = commentMap.get(comment.parentId);
-      if (parent) {
-        parent.replies.push(commentWithReplies);
+    if (commentWithReplies) {
+      if (comment.parentId === null) {
+        rootComments.push(commentWithReplies);
+      } else {
+        const parent = commentMap.get(comment.parentId);
+        if (parent && parent.replies) {
+          parent.replies.push(commentWithReplies);
+        }
       }
     }
   });

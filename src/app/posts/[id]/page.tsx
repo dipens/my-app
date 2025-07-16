@@ -1,55 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import CommentSection from '@/components/CommentSection';
+import Header from '@/components/Header';
+import MarkdownRenderer from '@/components/MarkdownRenderer';
+import VoteButtons from '@/components/VoteButtons';
+import { PostWithRelations } from '@/types';
+import { formatDistanceToNow } from 'date-fns';
 import { useSession } from 'next-auth/react';
 import { useParams, useRouter } from 'next/navigation';
-import { formatDistanceToNow } from 'date-fns';
-import Header from '@/components/Header';
-import VoteButtons from '@/components/VoteButtons';
-import CommentSection from '@/components/CommentSection';
-import MarkdownRenderer from '@/components/MarkdownRenderer';
-
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  dealUrl?: string;
-  dealPrice?: string;
-  originalPrice?: string;
-  storeName?: string;
-  isOnline: boolean;
-  upvotes: number;
-  downvotes: number;
-  commentCount: number;
-  isPinned: boolean;
-  createdAt: string;
-  updatedAt: string;
-  author: {
-    id: number;
-    username: string;
-    displayName: string;
-    avatar?: string;
-  };
-  category: {
-    id: number;
-    name: string;
-    slug: string;
-    color: string;
-  };
-  subcategory?: {
-    id: number;
-    name: string;
-    slug: string;
-  };
-}
+import { useEffect, useState } from 'react';
 
 export default function PostDetail() {
   const { data: session } = useSession();
   const params = useParams();
   const router = useRouter();
-  const [post, setPost] = useState<Post | null>(null);
+  const [post, setPost] = useState<PostWithRelations | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -95,6 +63,43 @@ export default function PostDetail() {
     if (subcategorySlug) params.set('subcategory', subcategorySlug);
 
     router.push(`/?${params.toString()}`);
+  };
+
+  const handleDelete = async () => {
+    if (!post) return;
+
+    // Check if post has comments
+    if (post.commentCount > 0) {
+      setError('Cannot delete post with comments');
+      return;
+    }
+
+    if (
+      !confirm(
+        'Are you sure you want to delete this post? This action cannot be undone.'
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setDeleting(true);
+      const response = await fetch(`/api/posts/${post.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        setError(data.error || 'Failed to delete post');
+      } else {
+        router.push('/');
+      }
+    } catch (error) {
+      setError('Failed to delete post');
+      console.error('Error deleting post:', error);
+    } finally {
+      setDeleting(false);
+    }
   };
 
   if (loading) {
@@ -237,12 +242,30 @@ export default function PostDetail() {
                   {post.isOnline ? 'Online Deal' : 'In-Store Deal'}
                 </span>
                 {session?.user?.username === post.author.username && (
-                  <button
-                    onClick={() => router.push(`/posts/${post.id}/edit`)}
-                    className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
-                  >
-                    Edit
-                  </button>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => router.push(`/posts/${post.id}/edit`)}
+                      className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={handleDelete}
+                      disabled={deleting || post.commentCount > 0}
+                      className={`px-3 py-1 text-sm rounded transition-colors ${
+                        post.commentCount > 0
+                          ? 'text-gray-400 cursor-not-allowed'
+                          : 'text-red-600 hover:text-red-800 hover:bg-red-50'
+                      }`}
+                      title={
+                        post.commentCount > 0
+                          ? 'Cannot delete post with comments'
+                          : 'Delete post'
+                      }
+                    >
+                      {deleting ? 'Deleting...' : 'Delete'}
+                    </button>
+                  </div>
                 )}
               </div>
             </div>

@@ -1,49 +1,19 @@
 'use client';
 
+import { PostWithRelations } from '@/types';
+import { formatDistanceToNow } from 'date-fns';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { formatDistanceToNow } from 'date-fns';
 import MarkdownRenderer from './MarkdownRenderer';
 
-interface Post {
-  id: number;
-  title: string;
-  excerpt: string;
-  dealUrl?: string;
-  dealPrice?: string;
-  originalPrice?: string;
-  storeName?: string;
-  isOnline: boolean;
-  upvotes: number;
-  downvotes: number;
-  commentCount: number;
-  isPinned: boolean;
-  createdAt: string;
-  author: {
-    id: number;
-    username: string;
-    displayName: string;
-    avatar?: string;
-  };
-  category: {
-    id: number;
-    name: string;
-    slug: string;
-    color: string;
-  };
-  subcategory?: {
-    id: number;
-    name: string;
-    slug: string;
-  };
-}
-
 interface PostCardProps {
-  post: Post;
+  post: PostWithRelations;
 }
 
 export default function PostCard({ post }: PostCardProps) {
   const router = useRouter();
+  const { data: session } = useSession();
   const netScore = post.upvotes - post.downvotes;
 
   const handleCategoryClick = (
@@ -56,6 +26,45 @@ export default function PostCard({ post }: PostCardProps) {
 
     router.push(`/?${params.toString()}`);
   };
+
+  const handleEdit = () => {
+    router.push(`/posts/${post.id}/edit`);
+  };
+
+  const handleDelete = async () => {
+    // Check if post has comments
+    if (post.commentCount > 0) {
+      alert('Cannot delete post with comments');
+      return;
+    }
+
+    if (
+      !confirm(
+        'Are you sure you want to delete this post? This action cannot be undone.'
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/posts/${post.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        alert(data.error || 'Failed to delete post');
+      } else {
+        // Refresh the page to show updated list
+        window.location.reload();
+      }
+    } catch (error) {
+      alert('Failed to delete post');
+      console.error('Error deleting post:', error);
+    }
+  };
+
+  const isOwner = session?.user?.username === post.author.username;
 
   return (
     <div
@@ -104,7 +113,7 @@ export default function PostCard({ post }: PostCardProps) {
           )}
         </div>
 
-        <div className="flex items-center space-x-2 text-sm text-gray-500">
+        <div className="flex items-center space-x-2">
           <span
             className={`px-2 py-1 rounded-full text-xs ${
               post.isOnline
@@ -114,6 +123,32 @@ export default function PostCard({ post }: PostCardProps) {
           >
             {post.isOnline ? 'Online' : 'In-Store'}
           </span>
+          {isOwner && (
+            <div className="flex items-center space-x-1">
+              <button
+                onClick={handleEdit}
+                className="px-2 py-1 text-xs text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
+              >
+                Edit
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={post.commentCount > 0}
+                className={`px-2 py-1 text-xs rounded transition-colors ${
+                  post.commentCount > 0
+                    ? 'text-gray-400 cursor-not-allowed'
+                    : 'text-red-600 hover:text-red-800 hover:bg-red-50'
+                }`}
+                title={
+                  post.commentCount > 0
+                    ? 'Cannot delete post with comments'
+                    : 'Delete post'
+                }
+              >
+                Delete
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -125,7 +160,7 @@ export default function PostCard({ post }: PostCardProps) {
           </h3>
         </Link>
         <div className="text-gray-600 text-sm line-clamp-2">
-          <MarkdownRenderer content={post.excerpt} />
+          <MarkdownRenderer content={post.excerpt || ''} />
         </div>
       </div>
 

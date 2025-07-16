@@ -1,54 +1,22 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { useParams, useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import RichTextEditor from '@/components/RichTextEditor';
-
-interface Category {
-  id: number;
-  name: string;
-  slug: string;
-  subcategories: {
-    id: number;
-    name: string;
-    slug: string;
-  }[];
-}
-
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  dealUrl?: string;
-  dealPrice?: string;
-  originalPrice?: string;
-  storeName?: string;
-  isOnline: boolean;
-  author: {
-    id: number;
-    username: string;
-    displayName: string;
-  };
-  category: {
-    id: number;
-    name: string;
-    slug: string;
-  };
-  subcategory?: {
-    id: number;
-    name: string;
-    slug: string;
-  };
-}
+import {
+  CategoryWithSubcategories,
+  PostWithRelations,
+  SessionUser,
+} from '@/types';
+import { useSession } from 'next-auth/react';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function EditPost() {
   const { data: session, status } = useSession();
   const params = useParams();
   const router = useRouter();
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [post, setPost] = useState<Post | null>(null);
+  const [categories, setCategories] = useState<CategoryWithSubcategories[]>([]);
+  const [post, setPost] = useState<PostWithRelations | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -92,7 +60,9 @@ export default function EditPost() {
       setPost(fetchedPost);
 
       // Check if user owns this post
-      if ((session?.user as any)?.username !== fetchedPost.author.username) {
+      if (
+        (session?.user as SessionUser)?.username !== fetchedPost.author.username
+      ) {
         setError('You can only edit your own posts');
         return;
       }

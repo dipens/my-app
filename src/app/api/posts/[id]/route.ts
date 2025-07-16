@@ -1,9 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
 import { db } from '@/db';
-import { posts, users, categories, subcategories } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { categories, comments, posts, subcategories, users } from '@/db/schema';
+import { authOptions } from '@/lib/auth';
+import { SessionUser } from '@/types';
+import { and, eq } from 'drizzle-orm';
+import { getServerSession } from 'next-auth/next';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   request: NextRequest,
@@ -74,7 +75,7 @@ export async function PUT(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -125,13 +126,15 @@ export async function PUT(
 
     // Check authorization by both ID and username for redundancy
     const sessionUserId = parseInt(session.user.id);
-    const sessionUsername = (session.user as any).username;
-    const sessionEmail = session.user.email;
-    
+    const sessionUsername = (session.user as SessionUser)?.username;
+    const sessionEmail = (session.user as SessionUser)?.email;
+
     const isAuthorizedById = existingPost[0].authorId === sessionUserId;
-    const isAuthorizedByUsername = sessionUsername && existingPost[0].author?.username === sessionUsername;
-    const isAuthorizedByEmail = sessionEmail && existingPost[0].author?.email === sessionEmail;
-    
+    const isAuthorizedByUsername =
+      sessionUsername && existingPost[0].author?.username === sessionUsername;
+    const isAuthorizedByEmail =
+      sessionEmail && existingPost[0].author?.email === sessionEmail;
+
     if (!isAuthorizedById && !isAuthorizedByUsername && !isAuthorizedByEmail) {
       return NextResponse.json(
         { error: 'You can only edit your own posts' },
@@ -206,6 +209,20 @@ export async function DELETE(
       return NextResponse.json(
         { error: 'Unauthorized to delete this post' },
         { status: 403 }
+      );
+    }
+
+    // Check if post has comments
+    const commentCount = await db
+      .select({ count: comments.id })
+      .from(comments)
+      .where(and(eq(comments.postId, postId), eq(comments.isActive, true)))
+      .limit(1);
+
+    if (commentCount.length > 0 && commentCount[0].count) {
+      return NextResponse.json(
+        { error: 'Cannot delete post with comments' },
+        { status: 400 }
       );
     }
 

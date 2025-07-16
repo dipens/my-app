@@ -1,45 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import Header from '@/components/Header';
 import CategorySidebar from '@/components/CategorySidebar';
+import Header from '@/components/Header';
 import PostCard from '@/components/PostCard';
-
-interface Post {
-  id: number;
-  title: string;
-  excerpt: string;
-  dealUrl?: string;
-  dealPrice?: string;
-  originalPrice?: string;
-  storeName?: string;
-  isOnline: boolean;
-  upvotes: number;
-  downvotes: number;
-  commentCount: number;
-  isPinned: boolean;
-  createdAt: string;
-  author: {
-    id: number;
-    username: string;
-    displayName: string;
-    avatar?: string;
-  };
-  category: {
-    id: number;
-    name: string;
-    slug: string;
-    color: string;
-  };
-  subcategory?: {
-    id: number;
-    name: string;
-    slug: string;
-  };
-}
+import { PostWithRelations } from '@/types';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 interface Category {
   id: number;
@@ -58,7 +26,7 @@ export default function Home() {
   const { data: session } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<PostWithRelations[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
