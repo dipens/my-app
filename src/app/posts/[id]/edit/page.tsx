@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import RichTextEditor from '@/components/RichTextEditor';
 
@@ -17,11 +17,40 @@ interface Category {
   }[];
 }
 
-export default function CreatePost() {
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  dealUrl?: string;
+  dealPrice?: string;
+  originalPrice?: string;
+  storeName?: string;
+  isOnline: boolean;
+  author: {
+    id: number;
+    username: string;
+    displayName: string;
+  };
+  category: {
+    id: number;
+    name: string;
+    slug: string;
+  };
+  subcategory?: {
+    id: number;
+    name: string;
+    slug: string;
+  };
+}
+
+export default function EditPost() {
   const { data: session, status } = useSession();
+  const params = useParams();
   const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [post, setPost] = useState<Post | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
   const [formData, setFormData] = useState({
@@ -43,8 +72,50 @@ export default function CreatePost() {
   }, [status, router]);
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
+    if (params.id) {
+      fetchPost();
+      fetchCategories();
+    }
+  }, [params.id]);
+
+  const fetchPost = async () => {
+    try {
+      const response = await fetch(`/api/posts/${params.id}`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Post not found');
+        return;
+      }
+
+      const fetchedPost = data.post;
+      setPost(fetchedPost);
+
+      // Check if user owns this post
+      if (session?.user?.email !== fetchedPost.author.username) {
+        setError('You can only edit your own posts');
+        return;
+      }
+
+      // Populate form data
+      setFormData({
+        title: fetchedPost.title,
+        content: fetchedPost.content,
+        categoryId: fetchedPost.category.id.toString(),
+        subcategoryId: fetchedPost.subcategory?.id.toString() || '',
+        dealUrl: fetchedPost.dealUrl || '',
+        dealPrice: fetchedPost.dealPrice || '',
+        originalPrice: fetchedPost.originalPrice || '',
+        storeName: fetchedPost.storeName || '',
+        isOnline: fetchedPost.isOnline,
+      });
+    } catch (error) {
+      setError('Failed to load post');
+      console.error('Error fetching post:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchCategories = async () => {
     try {
@@ -74,18 +145,18 @@ export default function CreatePost() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setSaving(true);
     setError('');
 
     if (!formData.title || !formData.content || !formData.categoryId) {
       setError('Title, content, and category are required');
-      setLoading(false);
+      setSaving(false);
       return;
     }
 
     try {
-      const response = await fetch('/api/posts', {
-        method: 'POST',
+      const response = await fetch(`/api/posts/${params.id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -101,16 +172,16 @@ export default function CreatePost() {
       if (!response.ok) {
         setError(data.error || 'Something went wrong');
       } else {
-        router.push(`/posts/${data.post.id}`);
+        router.push(`/posts/${params.id}`);
       }
     } catch (error) {
       setError('Something went wrong. Please try again.');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
-  if (status === 'loading') {
+  if (status === 'loading' || loading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
@@ -128,6 +199,30 @@ export default function CreatePost() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+            <div className="text-red-500 mb-4">
+              <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">{error}</h2>
+            <button
+              onClick={() => router.back()}
+              className="text-blue-600 hover:text-blue-800"
+            >
+              Go back
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const selectedCategory = categories.find(cat => cat.id === parseInt(formData.categoryId));
 
   return (
@@ -136,7 +231,7 @@ export default function CreatePost() {
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">Create New Post</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-6">Edit Post</h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
@@ -312,10 +407,10 @@ export default function CreatePost() {
               </button>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={saving}
                 className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
               >
-                {loading ? 'Creating...' : 'Create Post'}
+                {saving ? 'Saving...' : 'Update Post'}
               </button>
             </div>
           </form>

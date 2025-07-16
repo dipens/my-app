@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
+import MarkdownRenderer from './MarkdownRenderer';
 
 interface Post {
   id: number;
@@ -104,7 +105,9 @@ export default function PostCard({ post }: PostCardProps) {
             {post.title}
           </h3>
         </Link>
-        <p className="text-gray-600 text-sm line-clamp-2">{post.excerpt}</p>
+        <div className="text-gray-600 text-sm line-clamp-2">
+          <MarkdownRenderer content={post.excerpt} />
+        </div>
       </div>
 
       {/* Deal Info */}

@@ -7,6 +7,7 @@ import { formatDistanceToNow } from 'date-fns';
 import Header from '@/components/Header';
 import VoteButtons from '@/components/VoteButtons';
 import CommentSection from '@/components/CommentSection';
+import MarkdownRenderer from '@/components/MarkdownRenderer';
 
 interface Post {
   id: number;
@@ -197,11 +198,21 @@ export default function PostDetail() {
                 )}
               </div>
               
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                post.isOnline ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
-              }`}>
-                {post.isOnline ? 'Online Deal' : 'In-Store Deal'}
-              </span>
+              <div className="flex items-center space-x-2">
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  post.isOnline ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+                }`}>
+                  {post.isOnline ? 'Online Deal' : 'In-Store Deal'}
+                </span>
+                {session?.user?.email === post.author.username && (
+                  <button
+                    onClick={() => router.push(`/posts/${post.id}/edit`)}
+                    className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
+                  >
+                    Edit
+                  </button>
+                )}
+              </div>
             </div>
 
             <h1 className="text-2xl font-bold text-gray-900 mb-3">{post.title}</h1>
@@ -268,9 +279,7 @@ export default function PostDetail() {
           {/* Content */}
           <div className="px-6 py-6">
             <div className="prose max-w-none">
-              <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
-                {post.content}
-              </div>
+              <MarkdownRenderer content={post.content} className="text-gray-700 leading-relaxed" />
             </div>
           </div>
 
