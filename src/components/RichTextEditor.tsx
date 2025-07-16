@@ -8,7 +8,11 @@ interface RichTextEditorProps {
   placeholder?: string;
 }
 
-export default function RichTextEditor({ value, onChange, placeholder = "Write your post content..." }: RichTextEditorProps) {
+export default function RichTextEditor({
+  value,
+  onChange,
+  placeholder = 'Write your post content...',
+}: RichTextEditorProps) {
   const [showImageDialog, setShowImageDialog] = useState(false);
   const [showLinkDialog, setShowLinkDialog] = useState(false);
   const [showYouTubeDialog, setShowYouTubeDialog] = useState(false);
@@ -25,9 +29,9 @@ export default function RichTextEditor({ value, onChange, placeholder = "Write y
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const newValue = value.substring(0, start) + text + value.substring(end);
-    
+
     onChange(newValue);
-    
+
     // Restore cursor position
     setTimeout(() => {
       textarea.selectionStart = textarea.selectionEnd = start + text.length;
@@ -53,7 +57,8 @@ export default function RichTextEditor({ value, onChange, placeholder = "Write y
   };
 
   const extractYouTubeId = (url: string) => {
-    const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+    const regex =
+      /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
     const match = url.match(regex);
     return match ? match[1] : null;
   };
@@ -62,7 +67,9 @@ export default function RichTextEditor({ value, onChange, placeholder = "Write y
     if (youtubeUrl.trim()) {
       const videoId = extractYouTubeId(youtubeUrl.trim());
       if (videoId) {
-        insertAtCursor(`[YouTube Video](https://www.youtube.com/watch?v=${videoId})`);
+        insertAtCursor(
+          `[YouTube Video](https://www.youtube.com/watch?v=${videoId})`
+        );
       } else {
         insertAtCursor(`[YouTube Video](${youtubeUrl.trim()})`);
       }
@@ -78,7 +85,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "Write y
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const selectedText = value.substring(start, end);
-    
+
     let formattedText = '';
     switch (format) {
       case 'bold':
@@ -130,7 +137,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "Write y
           className="p-2 hover:bg-gray-200 rounded text-sm font-mono"
           title="Code"
         >
-          {'</>'}  
+          {'</>'}
         </button>
         <button
           type="button"
@@ -156,9 +163,9 @@ export default function RichTextEditor({ value, onChange, placeholder = "Write y
         >
           H
         </button>
-        
+
         <div className="w-px h-6 bg-gray-300"></div>
-        
+
         <button
           type="button"
           onClick={() => setShowImageDialog(true)}
@@ -189,7 +196,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "Write y
       <textarea
         ref={textareaRef}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
         className="w-full h-64 p-4 resize-none focus:outline-none"
         style={{ minHeight: '200px' }}
@@ -197,7 +204,8 @@ export default function RichTextEditor({ value, onChange, placeholder = "Write y
 
       {/* Preview hint */}
       <div className="bg-gray-50 border-t border-gray-300 p-2 text-xs text-gray-600">
-        Supports markdown formatting: **bold**, *italic*, `code`, {'>'}quotes, - lists, ## headings, links, and images
+        Supports markdown formatting: **bold**, *italic*, `code`, {'>'}quotes, -
+        lists, ## headings, links, and images
       </div>
 
       {/* Image Dialog */}
@@ -208,7 +216,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "Write y
             <input
               type="url"
               value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
+              onChange={e => setImageUrl(e.target.value)}
               placeholder="Enter image URL..."
               className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
               autoFocus
@@ -241,7 +249,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "Write y
             <input
               type="text"
               value={linkText}
-              onChange={(e) => setLinkText(e.target.value)}
+              onChange={e => setLinkText(e.target.value)}
               placeholder="Link text..."
               className="w-full border border-gray-300 rounded px-3 py-2 mb-3"
               autoFocus
@@ -249,7 +257,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "Write y
             <input
               type="url"
               value={linkUrl}
-              onChange={(e) => setLinkUrl(e.target.value)}
+              onChange={e => setLinkUrl(e.target.value)}
               placeholder="Enter URL..."
               className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
             />
@@ -281,7 +289,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "Write y
             <input
               type="url"
               value={youtubeUrl}
-              onChange={(e) => setYoutubeUrl(e.target.value)}
+              onChange={e => setYoutubeUrl(e.target.value)}
               placeholder="Enter YouTube URL..."
               className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
               autoFocus

@@ -110,7 +110,11 @@ export default function CommentSection({ postId }: CommentSectionProps) {
     }
   };
 
-  const handleVoteUpdate = (commentId: number, upvotes: number, downvotes: number) => {
+  const handleVoteUpdate = (
+    commentId: number,
+    upvotes: number,
+    downvotes: number
+  ) => {
     const updateCommentVotes = (comments: Comment[]): Comment[] => {
       return comments.map(comment => {
         if (comment.id === commentId) {
@@ -130,7 +134,10 @@ export default function CommentSection({ postId }: CommentSectionProps) {
     const maxDepth = 3; // Limit nesting depth
 
     return (
-      <div key={comment.id} className={`${depth > 0 ? 'ml-8 border-l-2 border-gray-200 pl-4' : ''}`}>
+      <div
+        key={comment.id}
+        className={`${depth > 0 ? 'ml-8 border-l-2 border-gray-200 pl-4' : ''}`}
+      >
         <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4">
           {/* Comment Header */}
           <div className="flex items-center justify-between mb-3">
@@ -148,16 +155,22 @@ export default function CommentSection({ postId }: CommentSectionProps) {
                   </span>
                 )}
               </div>
-              <span className="font-medium text-gray-900">{comment.author.displayName}</span>
+              <span className="font-medium text-gray-900">
+                {comment.author.displayName}
+              </span>
               <span className="text-sm text-gray-500" suppressHydrationWarning>
-                {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}
+                {formatDistanceToNow(new Date(comment.createdAt), {
+                  addSuffix: true,
+                })}
               </span>
             </div>
           </div>
 
           {/* Comment Content */}
           <div className="mb-3">
-            <p className="text-gray-700 whitespace-pre-wrap">{comment.content}</p>
+            <p className="text-gray-700 whitespace-pre-wrap">
+              {comment.content}
+            </p>
           </div>
 
           {/* Comment Actions */}
@@ -166,12 +179,16 @@ export default function CommentSection({ postId }: CommentSectionProps) {
               commentId={comment.id}
               initialUpvotes={comment.upvotes}
               initialDownvotes={comment.downvotes}
-              onVoteUpdate={(upvotes, downvotes) => handleVoteUpdate(comment.id, upvotes, downvotes)}
+              onVoteUpdate={(upvotes, downvotes) =>
+                handleVoteUpdate(comment.id, upvotes, downvotes)
+              }
             />
 
             {session && depth < maxDepth && (
               <button
-                onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
+                onClick={() =>
+                  setReplyingTo(replyingTo === comment.id ? null : comment.id)
+                }
                 className="text-sm text-blue-600 hover:text-blue-700 font-medium"
               >
                 Reply
@@ -181,10 +198,13 @@ export default function CommentSection({ postId }: CommentSectionProps) {
 
           {/* Reply Form */}
           {replyingTo === comment.id && (
-            <form onSubmit={(e) => handleSubmitReply(e, comment.id)} className="mt-4">
+            <form
+              onSubmit={e => handleSubmitReply(e, comment.id)}
+              className="mt-4"
+            >
               <textarea
                 value={replyText}
-                onChange={(e) => setReplyText(e.target.value)}
+                onChange={e => setReplyText(e.target.value)}
                 placeholder="Write your reply..."
                 rows={3}
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
@@ -233,7 +253,7 @@ export default function CommentSection({ postId }: CommentSectionProps) {
         <form onSubmit={handleSubmitComment} className="mb-8">
           <textarea
             value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
+            onChange={e => setNewComment(e.target.value)}
             placeholder="Share your thoughts about this deal..."
             rows={4}
             className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
@@ -251,7 +271,10 @@ export default function CommentSection({ postId }: CommentSectionProps) {
       ) : (
         <div className="mb-8 p-4 bg-gray-50 rounded-lg text-center">
           <p className="text-gray-600">
-            <a href="/auth/signin" className="text-blue-600 hover:text-blue-700 font-medium">
+            <a
+              href="/auth/signin"
+              className="text-blue-600 hover:text-blue-700 font-medium"
+            >
               Sign in
             </a>{' '}
             to join the discussion
@@ -277,11 +300,24 @@ export default function CommentSection({ postId }: CommentSectionProps) {
       ) : (
         <div className="text-center py-8">
           <div className="text-gray-400 mb-2">
-            <svg className="mx-auto h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" suppressHydrationWarning>
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            <svg
+              className="mx-auto h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              suppressHydrationWarning
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+              />
             </svg>
           </div>
-          <p className="text-gray-600">No comments yet. Be the first to share your thoughts!</p>
+          <p className="text-gray-600">
+            No comments yet. Be the first to share your thoughts!
+          </p>
         </div>
       )}
     </div>

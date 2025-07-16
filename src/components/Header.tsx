@@ -14,8 +14,14 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50" suppressHydrationWarning>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" suppressHydrationWarning>
+    <header
+      className="bg-white border-b border-gray-200 sticky top-0 z-50"
+      suppressHydrationWarning
+    >
+      <div
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        suppressHydrationWarning
+      >
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center">
@@ -33,8 +39,19 @@ export default function Header() {
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
               />
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" suppressHydrationWarning>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <svg
+                  className="h-5 w-5 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  suppressHydrationWarning
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
               </div>
             </div>
@@ -50,18 +67,33 @@ export default function Header() {
                 >
                   Create Post
                 </Link>
-                
+
                 <div className="relative">
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
                     className="flex items-center space-x-2 text-gray-700 hover:text-gray-900"
                   >
                     <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                      {session.user?.name?.[0] || session.user?.email?.[0] || 'U'}
+                      {session.user?.name?.[0] ||
+                        session.user?.email?.[0] ||
+                        'U'}
                     </div>
-                    <span className="text-sm font-medium">{session.user?.name || 'User'}</span>
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" suppressHydrationWarning>
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <span className="text-sm font-medium">
+                      {session.user?.name || 'User'}
+                    </span>
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      suppressHydrationWarning
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
                     </svg>
                   </button>
 

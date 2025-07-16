@@ -9,10 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { type, postId, commentId } = await request.json();
@@ -35,13 +32,17 @@ export async function POST(request: NextRequest) {
     // Check if user has already voted
     let existingVote;
     if (postId) {
-      existingVote = await db.select().from(votes).where(
-        and(eq(votes.userId, userId), eq(votes.postId, postId))
-      ).limit(1);
+      existingVote = await db
+        .select()
+        .from(votes)
+        .where(and(eq(votes.userId, userId), eq(votes.postId, postId)))
+        .limit(1);
     } else {
-      existingVote = await db.select().from(votes).where(
-        and(eq(votes.userId, userId), eq(votes.commentId, commentId))
-      ).limit(1);
+      existingVote = await db
+        .select()
+        .from(votes)
+        .where(and(eq(votes.userId, userId), eq(votes.commentId, commentId)))
+        .limit(1);
     }
 
     if (existingVote[0]) {
@@ -49,20 +50,21 @@ export async function POST(request: NextRequest) {
       if (existingVote[0].type === type) {
         // Remove vote if clicking same vote type
         await db.delete(votes).where(eq(votes.id, existingVote[0].id));
-        
+
         // Update vote counts
         await updateVoteCounts(postId, commentId);
-        
+
         return NextResponse.json({ message: 'Vote removed' });
       } else {
         // Update vote type if different
-        await db.update(votes)
+        await db
+          .update(votes)
           .set({ type })
           .where(eq(votes.id, existingVote[0].id));
-        
+
         // Update vote counts
         await updateVoteCounts(postId, commentId);
-        
+
         return NextResponse.json({ message: 'Vote updated' });
       }
     } else {
@@ -73,14 +75,11 @@ export async function POST(request: NextRequest) {
         commentId: commentId || null,
         type,
       });
-      
+
       // Update vote counts
       await updateVoteCounts(postId, commentId);
-      
-      return NextResponse.json(
-        { message: 'Vote created' },
-        { status: 201 }
-      );
+
+      return NextResponse.json({ message: 'Vote created' }, { status: 201 });
     }
   } catch (error) {
     console.error('Error handling vote:', error);
@@ -94,15 +93,18 @@ export async function POST(request: NextRequest) {
 async function updateVoteCounts(postId?: number, commentId?: number) {
   if (postId) {
     // Update post vote counts
-    const upvoteCount = await db.select({ count: sql<number>`count(*)` })
+    const upvoteCount = await db
+      .select({ count: sql<number>`count(*)` })
       .from(votes)
       .where(and(eq(votes.postId, postId), eq(votes.type, 'up')));
-    
-    const downvoteCount = await db.select({ count: sql<number>`count(*)` })
+
+    const downvoteCount = await db
+      .select({ count: sql<number>`count(*)` })
       .from(votes)
       .where(and(eq(votes.postId, postId), eq(votes.type, 'down')));
 
-    await db.update(posts)
+    await db
+      .update(posts)
       .set({
         upvotes: upvoteCount[0].count,
         downvotes: downvoteCount[0].count,
@@ -110,15 +112,18 @@ async function updateVoteCounts(postId?: number, commentId?: number) {
       .where(eq(posts.id, postId));
   } else if (commentId) {
     // Update comment vote counts
-    const upvoteCount = await db.select({ count: sql<number>`count(*)` })
+    const upvoteCount = await db
+      .select({ count: sql<number>`count(*)` })
       .from(votes)
       .where(and(eq(votes.commentId, commentId), eq(votes.type, 'up')));
-    
-    const downvoteCount = await db.select({ count: sql<number>`count(*)` })
+
+    const downvoteCount = await db
+      .select({ count: sql<number>`count(*)` })
       .from(votes)
       .where(and(eq(votes.commentId, commentId), eq(votes.type, 'down')));
 
-    await db.update(comments)
+    await db
+      .update(comments)
       .set({
         upvotes: upvoteCount[0].count,
         downvotes: downvoteCount[0].count,

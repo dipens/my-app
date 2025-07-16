@@ -35,10 +35,9 @@ export async function GET(request: NextRequest) {
       })
       .from(comments)
       .leftJoin(users, eq(comments.authorId, users.id))
-      .where(and(
-        eq(comments.postId, parseInt(postId)),
-        eq(comments.isActive, true)
-      ))
+      .where(
+        and(eq(comments.postId, parseInt(postId)), eq(comments.isActive, true))
+      )
       .orderBy(desc(comments.createdAt));
 
     // Organize comments into a tree structure
@@ -58,10 +57,7 @@ export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { content, postId, parentId } = await request.json();
@@ -74,17 +70,22 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify post exists
-    const postExists = await db.select().from(posts).where(eq(posts.id, postId)).limit(1);
+    const postExists = await db
+      .select()
+      .from(posts)
+      .where(eq(posts.id, postId))
+      .limit(1);
     if (!postExists[0]) {
-      return NextResponse.json(
-        { error: 'Post not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
     // If parentId is provided, verify parent comment exists
     if (parentId) {
-      const parentExists = await db.select().from(comments).where(eq(comments.id, parentId)).limit(1);
+      const parentExists = await db
+        .select()
+        .from(comments)
+        .where(eq(comments.id, parentId))
+        .limit(1);
       if (!parentExists[0]) {
         return NextResponse.json(
           { error: 'Parent comment not found' },
@@ -93,17 +94,24 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const newComment = await db.insert(comments).values({
-      content,
-      authorId: parseInt(session.user.id),
-      postId,
-      parentId: parentId || null,
-    }).returning();
+    const newComment = await db
+      .insert(comments)
+      .values({
+        content,
+        authorId: parseInt(session.user.id),
+        postId,
+        parentId: parentId || null,
+      })
+      .returning();
 
     // Update post comment count
-    await db.update(posts)
+    await db
+      .update(posts)
       .set({
-        commentCount: db.select({ count: comments.id }).from(comments).where(eq(comments.postId, postId))
+        commentCount: db
+          .select({ count: comments.id })
+          .from(comments)
+          .where(eq(comments.postId, postId)),
       })
       .where(eq(posts.id, postId));
 

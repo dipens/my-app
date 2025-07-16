@@ -7,6 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "dotenv -e .env.local -- drizzle-kit push",
@@ -14,7 +18,8 @@
     "db:seed": "node run-seed.js",
     "db:setup": "./start-database.sh",
     "db:reset": "dotenv -e .env.local -- drizzle-kit push --force && npm run db:seed",
-    "db:check": "node check-database.js"
+    "db:check": "node check-database.js",
+    "prepare": "husky"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -35,13 +40,29 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.37.0",
+    "@typescript-eslint/parser": "^8.37.0",
     "cross-env": "^7.0.3",
     "dotenv-cli": "^8.0.0",
     "drizzle-kit": "^0.31.4",
     "eslint": "^9",
     "eslint-config-next": "15.4.1",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.5.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.6.2",
     "tailwindcss": "^4",
     "tsx": "^4.20.3",
     "typescript": "^5"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix --max-warnings=10",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }

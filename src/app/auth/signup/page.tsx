@@ -155,7 +155,10 @@ export default function SignUp() {
           </div>
 
           <div className="text-center">
-            <Link href="/auth/signin" className="text-indigo-600 hover:text-indigo-500">
+            <Link
+              href="/auth/signin"
+              className="text-indigo-600 hover:text-indigo-500"
+            >
               Already have an account? Sign in
             </Link>
           </div>

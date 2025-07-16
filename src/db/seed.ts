@@ -60,29 +60,65 @@ const categoriesData = [
 const subcategoriesData = [
   // Electronics
   { name: 'Smartphones', slug: 'smartphones', categorySlug: 'electronics' },
-  { name: 'Laptops & Computers', slug: 'laptops-computers', categorySlug: 'electronics' },
+  {
+    name: 'Laptops & Computers',
+    slug: 'laptops-computers',
+    categorySlug: 'electronics',
+  },
   { name: 'Gaming', slug: 'gaming', categorySlug: 'electronics' },
   { name: 'Audio & Video', slug: 'audio-video', categorySlug: 'electronics' },
   { name: 'Smart Home', slug: 'smart-home', categorySlug: 'electronics' },
-  { name: 'Cameras & Photography', slug: 'cameras-photography', categorySlug: 'electronics' },
+  {
+    name: 'Cameras & Photography',
+    slug: 'cameras-photography',
+    categorySlug: 'electronics',
+  },
 
   // Clothing & Fashion
-  { name: "Men's Clothing", slug: 'mens-clothing', categorySlug: 'clothing-fashion' },
-  { name: "Women's Clothing", slug: 'womens-clothing', categorySlug: 'clothing-fashion' },
+  {
+    name: "Men's Clothing",
+    slug: 'mens-clothing',
+    categorySlug: 'clothing-fashion',
+  },
+  {
+    name: "Women's Clothing",
+    slug: 'womens-clothing',
+    categorySlug: 'clothing-fashion',
+  },
   { name: 'Shoes', slug: 'shoes', categorySlug: 'clothing-fashion' },
-  { name: 'Accessories', slug: 'accessories', categorySlug: 'clothing-fashion' },
+  {
+    name: 'Accessories',
+    slug: 'accessories',
+    categorySlug: 'clothing-fashion',
+  },
   { name: 'Jewelry', slug: 'jewelry', categorySlug: 'clothing-fashion' },
 
   // Home & Garden
   { name: 'Furniture', slug: 'furniture', categorySlug: 'home-garden' },
-  { name: 'Kitchen & Dining', slug: 'kitchen-dining', categorySlug: 'home-garden' },
+  {
+    name: 'Kitchen & Dining',
+    slug: 'kitchen-dining',
+    categorySlug: 'home-garden',
+  },
   { name: 'Home Decor', slug: 'home-decor', categorySlug: 'home-garden' },
-  { name: 'Garden & Outdoor', slug: 'garden-outdoor', categorySlug: 'home-garden' },
-  { name: 'Tools & Hardware', slug: 'tools-hardware', categorySlug: 'home-garden' },
+  {
+    name: 'Garden & Outdoor',
+    slug: 'garden-outdoor',
+    categorySlug: 'home-garden',
+  },
+  {
+    name: 'Tools & Hardware',
+    slug: 'tools-hardware',
+    categorySlug: 'home-garden',
+  },
 
   // Automotive
   { name: 'Car Parts', slug: 'car-parts', categorySlug: 'automotive' },
-  { name: 'Car Accessories', slug: 'car-accessories', categorySlug: 'automotive' },
+  {
+    name: 'Car Accessories',
+    slug: 'car-accessories',
+    categorySlug: 'automotive',
+  },
   { name: 'Motorcycles', slug: 'motorcycles', categorySlug: 'automotive' },
   { name: 'Car Care', slug: 'car-care', categorySlug: 'automotive' },
 
@@ -90,41 +126,86 @@ const subcategoriesData = [
   { name: 'Skincare', slug: 'skincare', categorySlug: 'health-beauty' },
   { name: 'Makeup', slug: 'makeup', categorySlug: 'health-beauty' },
   { name: 'Hair Care', slug: 'hair-care', categorySlug: 'health-beauty' },
-  { name: 'Vitamins & Supplements', slug: 'vitamins-supplements', categorySlug: 'health-beauty' },
-  { name: 'Personal Care', slug: 'personal-care', categorySlug: 'health-beauty' },
+  {
+    name: 'Vitamins & Supplements',
+    slug: 'vitamins-supplements',
+    categorySlug: 'health-beauty',
+  },
+  {
+    name: 'Personal Care',
+    slug: 'personal-care',
+    categorySlug: 'health-beauty',
+  },
 
   // Sports & Outdoors
-  { name: 'Fitness Equipment', slug: 'fitness-equipment', categorySlug: 'sports-outdoors' },
-  { name: 'Outdoor Gear', slug: 'outdoor-gear', categorySlug: 'sports-outdoors' },
+  {
+    name: 'Fitness Equipment',
+    slug: 'fitness-equipment',
+    categorySlug: 'sports-outdoors',
+  },
+  {
+    name: 'Outdoor Gear',
+    slug: 'outdoor-gear',
+    categorySlug: 'sports-outdoors',
+  },
   { name: 'Team Sports', slug: 'team-sports', categorySlug: 'sports-outdoors' },
-  { name: 'Water Sports', slug: 'water-sports', categorySlug: 'sports-outdoors' },
-  { name: 'Winter Sports', slug: 'winter-sports', categorySlug: 'sports-outdoors' },
+  {
+    name: 'Water Sports',
+    slug: 'water-sports',
+    categorySlug: 'sports-outdoors',
+  },
+  {
+    name: 'Winter Sports',
+    slug: 'winter-sports',
+    categorySlug: 'sports-outdoors',
+  },
 
   // Food & Beverages
   { name: 'Restaurants', slug: 'restaurants', categorySlug: 'food-beverages' },
   { name: 'Grocery', slug: 'grocery', categorySlug: 'food-beverages' },
-  { name: 'Food Delivery', slug: 'food-delivery', categorySlug: 'food-beverages' },
+  {
+    name: 'Food Delivery',
+    slug: 'food-delivery',
+    categorySlug: 'food-beverages',
+  },
   { name: 'Coffee & Tea', slug: 'coffee-tea', categorySlug: 'food-beverages' },
 
   // Travel & Entertainment
   { name: 'Hotels', slug: 'hotels', categorySlug: 'travel-entertainment' },
   { name: 'Flights', slug: 'flights', categorySlug: 'travel-entertainment' },
-  { name: 'Car Rentals', slug: 'car-rentals', categorySlug: 'travel-entertainment' },
-  { name: 'Events & Concerts', slug: 'events-concerts', categorySlug: 'travel-entertainment' },
-  { name: 'Movies & Streaming', slug: 'movies-streaming', categorySlug: 'travel-entertainment' },
+  {
+    name: 'Car Rentals',
+    slug: 'car-rentals',
+    categorySlug: 'travel-entertainment',
+  },
+  {
+    name: 'Events & Concerts',
+    slug: 'events-concerts',
+    categorySlug: 'travel-entertainment',
+  },
+  {
+    name: 'Movies & Streaming',
+    slug: 'movies-streaming',
+    categorySlug: 'travel-entertainment',
+  },
 ];
 
 export async function seedDatabase() {
   try {
     console.log('Seeding categories...');
-    
-    const insertedCategories = await db.insert(categories).values(categoriesData).returning();
+
+    const insertedCategories = await db
+      .insert(categories)
+      .values(categoriesData)
+      .returning();
     console.log(`Inserted ${insertedCategories.length} categories`);
 
     console.log('Seeding subcategories...');
-    
+
     for (const subcategory of subcategoriesData) {
-      const category = insertedCategories.find(cat => cat.slug === subcategory.categorySlug);
+      const category = insertedCategories.find(
+        cat => cat.slug === subcategory.categorySlug
+      );
       if (category) {
         await db.insert(subcategories).values({
           name: subcategory.name,
@@ -133,7 +214,7 @@ export async function seedDatabase() {
         });
       }
     }
-    
+
     console.log(`Inserted ${subcategoriesData.length} subcategories`);
     console.log('Database seeded successfully!');
   } catch (error) {
@@ -143,8 +224,10 @@ export async function seedDatabase() {
 }
 
 if (require.main === module) {
-  seedDatabase().then(() => process.exit(0)).catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+  seedDatabase()
+    .then(() => process.exit(0))
+    .catch(error => {
+      console.error(error);
+      process.exit(1);
+    });
 }

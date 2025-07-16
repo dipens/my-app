@@ -22,14 +22,21 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const user = await db.select().from(users).where(eq(users.username, credentials.username)).limit(1);
-        
+        const user = await db
+          .select()
+          .from(users)
+          .where(eq(users.username, credentials.username))
+          .limit(1);
+
         if (!user[0] || !user[0].passwordHash) {
           return null;
         }
 
-        const isPasswordValid = await bcrypt.compare(credentials.password, user[0].passwordHash);
-        
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user[0].passwordHash
+        );
+
         if (!isPasswordValid) {
           return null;
         }
@@ -64,8 +71,12 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user, account, profile }) {
       if (account?.provider !== 'credentials') {
-        const existingUser = await db.select().from(users).where(eq(users.email, user.email!)).limit(1);
-        
+        const existingUser = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, user.email!))
+          .limit(1);
+
         if (!existingUser[0]) {
           await db.insert(users).values({
             username: user.email!.split('@')[0] + '_' + Date.now(),
@@ -82,7 +93,11 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user?.email) {
-        const dbUser = await db.select().from(users).where(eq(users.email, session.user.email)).limit(1);
+        const dbUser = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, session.user.email))
+          .limit(1);
         if (dbUser[0]) {
           session.user.id = dbUser[0].id.toString();
           session.user.username = dbUser[0].username;

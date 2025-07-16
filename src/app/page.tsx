@@ -62,7 +62,9 @@ export default function Home() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(
+    null
+  );
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -113,15 +115,18 @@ export default function Home() {
     }
   };
 
-  const handleCategoryFilter = (categorySlug: string | null, subcategorySlug: string | null = null) => {
+  const handleCategoryFilter = (
+    categorySlug: string | null,
+    subcategorySlug: string | null = null
+  ) => {
     setSelectedCategory(categorySlug);
     setSelectedSubcategory(subcategorySlug);
-    
+
     // Update URL parameters
     const params = new URLSearchParams();
     if (categorySlug) params.set('category', categorySlug);
     if (subcategorySlug) params.set('subcategory', subcategorySlug);
-    
+
     const newUrl = params.toString() ? `/?${params.toString()}` : '/';
     router.push(newUrl);
   };
@@ -147,7 +152,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50" suppressHydrationWarning>
       <Header />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex gap-8">
           {/* Sidebar */}
@@ -167,16 +172,15 @@ export default function Home() {
               <div className="flex justify-between items-center">
                 <div>
                   <h1 className="text-3xl font-bold text-gray-900">
-                    {selectedCategory ? 
-                      categories.find(c => c.slug === selectedCategory)?.name || 'Category' :
-                      'DealHub Forum'
-                    }
+                    {selectedCategory
+                      ? categories.find(c => c.slug === selectedCategory)
+                          ?.name || 'Category'
+                      : 'DealHub Forum'}
                   </h1>
                   <p className="text-gray-600 mt-2">
-                    {selectedCategory ? 
-                      `Discover the best deals in ${categories.find(c => c.slug === selectedCategory)?.name}` :
-                      'Discover and share the best deals from your favorite stores'
-                    }
+                    {selectedCategory
+                      ? `Discover the best deals in ${categories.find(c => c.slug === selectedCategory)?.name}`
+                      : 'Discover and share the best deals from your favorite stores'}
                   </p>
                 </div>
                 {session && (
@@ -207,7 +211,10 @@ export default function Home() {
                         onClick={() => handleCategoryFilter(selectedCategory)}
                         className="hover:text-blue-600"
                       >
-                        {categories.find(c => c.slug === selectedCategory)?.name}
+                        {
+                          categories.find(c => c.slug === selectedCategory)
+                            ?.name
+                        }
                       </button>
                     </>
                   )}
@@ -215,9 +222,13 @@ export default function Home() {
                     <>
                       <span className="mx-2">/</span>
                       <span className="text-gray-900">
-                        {categories
-                          .find(c => c.slug === selectedCategory)
-                          ?.subcategories.find(s => s.slug === selectedSubcategory)?.name}
+                        {
+                          categories
+                            .find(c => c.slug === selectedCategory)
+                            ?.subcategories.find(
+                              s => s.slug === selectedSubcategory
+                            )?.name
+                        }
                       </span>
                     </>
                   )}
@@ -229,7 +240,10 @@ export default function Home() {
             {loading ? (
               <div className="space-y-4">
                 {[...Array(5)].map((_, i) => (
-                  <div key={i} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 animate-pulse">
+                  <div
+                    key={i}
+                    className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 animate-pulse"
+                  >
                     <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
                     <div className="h-3 bg-gray-200 rounded w-1/2 mb-4"></div>
                     <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
@@ -239,18 +253,31 @@ export default function Home() {
               </div>
             ) : posts.length > 0 ? (
               <div className="space-y-4">
-                {posts.map((post) => (
+                {posts.map(post => (
                   <PostCard key={post.id} post={post} />
                 ))}
               </div>
             ) : (
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
                 <div className="text-gray-400 mb-4">
-                  <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" suppressHydrationWarning>
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10m0 0V6a2 2 0 00-2-2H9a2 2 0 00-2 2v2m0 0v10a2 2 0 002 2h6a2 2 0 002-2V8m0 0V6a2 2 0 00-2-2H9a2 2 0 00-2 2v2" />
+                  <svg
+                    className="mx-auto h-12 w-12"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    suppressHydrationWarning
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 8h10m0 0V6a2 2 0 00-2-2H9a2 2 0 00-2 2v2m0 0v10a2 2 0 002 2h6a2 2 0 002-2V8m0 0V6a2 2 0 00-2-2H9a2 2 0 00-2 2v2"
+                    />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No posts found</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  No posts found
+                </h3>
                 <p className="text-gray-600 mb-6">
                   Be the first to share a great deal in this category!
                 </p>

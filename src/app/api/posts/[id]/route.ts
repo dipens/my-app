@@ -54,10 +54,7 @@ export async function GET(
       .limit(1);
 
     if (!postData[0]) {
-      return NextResponse.json(
-        { error: 'Post not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
     return NextResponse.json({ post: postData[0] });
@@ -77,10 +74,7 @@ export async function PUT(
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const postId = parseInt(params.id);
@@ -96,13 +90,14 @@ export async function PUT(
       isOnline,
     } = await request.json();
 
-    const existingPost = await db.select().from(posts).where(eq(posts.id, postId)).limit(1);
-    
+    const existingPost = await db
+      .select()
+      .from(posts)
+      .where(eq(posts.id, postId))
+      .limit(1);
+
     if (!existingPost[0]) {
-      return NextResponse.json(
-        { error: 'Post not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
     if (existingPost[0].authorId !== parseInt(session.user.id)) {
@@ -112,9 +107,12 @@ export async function PUT(
       );
     }
 
-    const excerpt = content ? content.substring(0, 200) + (content.length > 200 ? '...' : '') : existingPost[0].excerpt;
+    const excerpt = content
+      ? content.substring(0, 200) + (content.length > 200 ? '...' : '')
+      : existingPost[0].excerpt;
 
-    const updatedPost = await db.update(posts)
+    const updatedPost = await db
+      .update(posts)
       .set({
         title: title || existingPost[0].title,
         content: content || existingPost[0].content,
@@ -122,18 +120,24 @@ export async function PUT(
         categoryId: categoryId || existingPost[0].categoryId,
         subcategoryId: subcategoryId || existingPost[0].subcategoryId,
         dealUrl: dealUrl !== undefined ? dealUrl : existingPost[0].dealUrl,
-        dealPrice: dealPrice !== undefined ? dealPrice : existingPost[0].dealPrice,
-        originalPrice: originalPrice !== undefined ? originalPrice : existingPost[0].originalPrice,
-        storeName: storeName !== undefined ? storeName : existingPost[0].storeName,
+        dealPrice:
+          dealPrice !== undefined ? dealPrice : existingPost[0].dealPrice,
+        originalPrice:
+          originalPrice !== undefined
+            ? originalPrice
+            : existingPost[0].originalPrice,
+        storeName:
+          storeName !== undefined ? storeName : existingPost[0].storeName,
         isOnline: isOnline !== undefined ? isOnline : existingPost[0].isOnline,
         updatedAt: new Date(),
       })
       .where(eq(posts.id, postId))
       .returning();
 
-    return NextResponse.json(
-      { message: 'Post updated successfully', post: updatedPost[0] }
-    );
+    return NextResponse.json({
+      message: 'Post updated successfully',
+      post: updatedPost[0],
+    });
   } catch (error) {
     console.error('Error updating post:', error);
     return NextResponse.json(
@@ -150,21 +154,19 @@ export async function DELETE(
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const postId = parseInt(params.id);
 
-    const existingPost = await db.select().from(posts).where(eq(posts.id, postId)).limit(1);
-    
+    const existingPost = await db
+      .select()
+      .from(posts)
+      .where(eq(posts.id, postId))
+      .limit(1);
+
     if (!existingPost[0]) {
-      return NextResponse.json(
-        { error: 'Post not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
     if (existingPost[0].authorId !== parseInt(session.user.id)) {
@@ -174,13 +176,9 @@ export async function DELETE(
       );
     }
 
-    await db.update(posts)
-      .set({ isActive: false })
-      .where(eq(posts.id, postId));
+    await db.update(posts).set({ isActive: false }).where(eq(posts.id, postId));
 
-    return NextResponse.json(
-      { message: 'Post deleted successfully' }
-    );
+    return NextResponse.json({ message: 'Post deleted successfully' });
   } catch (error) {
     console.error('Error deleting post:', error);
     return NextResponse.json(

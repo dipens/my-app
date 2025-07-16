@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+.next/
+
+# Database scripts
+check-database.js
+run-seed.js
+
+# Build outputs
+build/
+dist/
+
+# Config files
+*.config.js
+*.config.mjs

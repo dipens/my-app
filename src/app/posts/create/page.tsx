@@ -56,15 +56,19 @@ export default function CreatePost() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value, type } = e.target;
-    
+
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
       setFormData(prev => ({ ...prev, [name]: checked }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
-      
+
       // Reset subcategory when category changes
       if (name === 'categoryId') {
         setFormData(prev => ({ ...prev, subcategoryId: '' }));
@@ -92,7 +96,9 @@ export default function CreatePost() {
         body: JSON.stringify({
           ...formData,
           categoryId: parseInt(formData.categoryId),
-          subcategoryId: formData.subcategoryId ? parseInt(formData.subcategoryId) : null,
+          subcategoryId: formData.subcategoryId
+            ? parseInt(formData.subcategoryId)
+            : null,
         }),
       });
 
@@ -128,20 +134,27 @@ export default function CreatePost() {
     );
   }
 
-  const selectedCategory = categories.find(cat => cat.id === parseInt(formData.categoryId));
+  const selectedCategory = categories.find(
+    cat => cat.id === parseInt(formData.categoryId)
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">Create New Post</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-6">
+            Create New Post
+          </h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Title *
               </label>
               <input
@@ -159,7 +172,10 @@ export default function CreatePost() {
             {/* Category and Subcategory */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="categoryId"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Category *
                 </label>
                 <select
@@ -180,7 +196,10 @@ export default function CreatePost() {
               </div>
 
               <div>
-                <label htmlFor="subcategoryId" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="subcategoryId"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Subcategory
                 </label>
                 <select
@@ -203,11 +222,16 @@ export default function CreatePost() {
 
             {/* Deal Information */}
             <div className="border-t pt-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Deal Information</h3>
-              
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                Deal Information
+              </h3>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label htmlFor="dealPrice" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="dealPrice"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Deal Price
                   </label>
                   <input
@@ -222,7 +246,10 @@ export default function CreatePost() {
                 </div>
 
                 <div>
-                  <label htmlFor="originalPrice" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="originalPrice"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Original Price
                   </label>
                   <input
@@ -239,7 +266,10 @@ export default function CreatePost() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label htmlFor="storeName" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="storeName"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Store Name
                   </label>
                   <input
@@ -254,7 +284,10 @@ export default function CreatePost() {
                 </div>
 
                 <div>
-                  <label htmlFor="dealUrl" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="dealUrl"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Deal URL
                   </label>
                   <input
@@ -278,7 +311,10 @@ export default function CreatePost() {
                   onChange={handleChange}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
-                <label htmlFor="isOnline" className="ml-2 block text-sm text-gray-700">
+                <label
+                  htmlFor="isOnline"
+                  className="ml-2 block text-sm text-gray-700"
+                >
                   This is an online deal
                 </label>
               </div>
@@ -286,20 +322,23 @@ export default function CreatePost() {
 
             {/* Content */}
             <div>
-              <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="content"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Description *
               </label>
               <RichTextEditor
                 value={formData.content}
-                onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
+                onChange={value =>
+                  setFormData(prev => ({ ...prev, content: value }))
+                }
                 placeholder="Describe the deal, include details about the product, discount amount, expiry date, any coupon codes, and why it's a good deal..."
               />
             </div>
 
             {/* Error Message */}
-            {error && (
-              <div className="text-red-600 text-sm">{error}</div>
-            )}
+            {error && <div className="text-red-600 text-sm">{error}</div>}
 
             {/* Submit Button */}
             <div className="flex justify-end space-x-4">

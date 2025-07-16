@@ -127,15 +127,19 @@ export default function EditPost() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value, type } = e.target;
-    
+
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
       setFormData(prev => ({ ...prev, [name]: checked }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
-      
+
       // Reset subcategory when category changes
       if (name === 'categoryId') {
         setFormData(prev => ({ ...prev, subcategoryId: '' }));
@@ -163,7 +167,9 @@ export default function EditPost() {
         body: JSON.stringify({
           ...formData,
           categoryId: parseInt(formData.categoryId),
-          subcategoryId: formData.subcategoryId ? parseInt(formData.subcategoryId) : null,
+          subcategoryId: formData.subcategoryId
+            ? parseInt(formData.subcategoryId)
+            : null,
         }),
       });
 
@@ -206,11 +212,23 @@ export default function EditPost() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
             <div className="text-red-500 mb-4">
-              <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              <svg
+                className="mx-auto h-12 w-12"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+                />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">{error}</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+              {error}
+            </h2>
             <button
               onClick={() => router.back()}
               className="text-blue-600 hover:text-blue-800"
@@ -223,12 +241,14 @@ export default function EditPost() {
     );
   }
 
-  const selectedCategory = categories.find(cat => cat.id === parseInt(formData.categoryId));
+  const selectedCategory = categories.find(
+    cat => cat.id === parseInt(formData.categoryId)
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-6">Edit Post</h1>
@@ -236,7 +256,10 @@ export default function EditPost() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Title *
               </label>
               <input
@@ -254,7 +277,10 @@ export default function EditPost() {
             {/* Category and Subcategory */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="categoryId"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Category *
                 </label>
                 <select
@@ -275,7 +301,10 @@ export default function EditPost() {
               </div>
 
               <div>
-                <label htmlFor="subcategoryId" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="subcategoryId"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Subcategory
                 </label>
                 <select
@@ -298,11 +327,16 @@ export default function EditPost() {
 
             {/* Deal Information */}
             <div className="border-t pt-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Deal Information</h3>
-              
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                Deal Information
+              </h3>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label htmlFor="dealPrice" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="dealPrice"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Deal Price
                   </label>
                   <input
@@ -317,7 +351,10 @@ export default function EditPost() {
                 </div>
 
                 <div>
-                  <label htmlFor="originalPrice" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="originalPrice"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Original Price
                   </label>
                   <input
@@ -334,7 +371,10 @@ export default function EditPost() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label htmlFor="storeName" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="storeName"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Store Name
                   </label>
                   <input
@@ -349,7 +389,10 @@ export default function EditPost() {
                 </div>
 
                 <div>
-                  <label htmlFor="dealUrl" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="dealUrl"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Deal URL
                   </label>
                   <input
@@ -373,7 +416,10 @@ export default function EditPost() {
                   onChange={handleChange}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
-                <label htmlFor="isOnline" className="ml-2 block text-sm text-gray-700">
+                <label
+                  htmlFor="isOnline"
+                  className="ml-2 block text-sm text-gray-700"
+                >
                   This is an online deal
                 </label>
               </div>
@@ -381,20 +427,23 @@ export default function EditPost() {
 
             {/* Content */}
             <div>
-              <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="content"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Description *
               </label>
               <RichTextEditor
                 value={formData.content}
-                onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
+                onChange={value =>
+                  setFormData(prev => ({ ...prev, content: value }))
+                }
                 placeholder="Describe the deal, include details about the product, discount amount, expiry date, any coupon codes, and why it's a good deal..."
               />
             </div>
 
             {/* Error Message */}
-            {error && (
-              <div className="text-red-600 text-sm">{error}</div>
-            )}
+            {error && <div className="text-red-600 text-sm">{error}</div>}
 
             {/* Submit Button */}
             <div className="flex justify-end space-x-4">

@@ -19,7 +19,10 @@ interface CategorySidebarProps {
   categories: Category[];
   selectedCategory: string | null;
   selectedSubcategory: string | null;
-  onCategorySelect: (categorySlug: string | null, subcategorySlug?: string | null) => void;
+  onCategorySelect: (
+    categorySlug: string | null,
+    subcategorySlug?: string | null
+  ) => void;
 }
 
 export default function CategorySidebar({
@@ -28,7 +31,9 @@ export default function CategorySidebar({
   selectedSubcategory,
   onCategorySelect,
 }: CategorySidebarProps) {
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
+    new Set()
+  );
 
   const toggleCategory = (categorySlug: string) => {
     const newExpanded = new Set(expandedCategories);
@@ -43,7 +48,7 @@ export default function CategorySidebar({
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
       <h2 className="text-lg font-semibold text-gray-900 mb-4">Categories</h2>
-      
+
       {/* All Categories */}
       <button
         onClick={() => onCategorySelect(null)}
@@ -58,10 +63,10 @@ export default function CategorySidebar({
 
       {/* Category List */}
       <div className="space-y-1">
-        {categories.map((category) => {
+        {categories.map(category => {
           const isExpanded = expandedCategories.has(category.slug);
           const isSelected = selectedCategory === category.slug;
-          
+
           return (
             <div key={category.id}>
               {/* Category Header */}
@@ -82,7 +87,7 @@ export default function CategorySidebar({
                     {category.name}
                   </div>
                 </button>
-                
+
                 {category.subcategories.length > 0 && (
                   <button
                     onClick={() => toggleCategory(category.slug)}
@@ -97,7 +102,12 @@ export default function CategorySidebar({
                       stroke="currentColor"
                       suppressHydrationWarning
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                   </button>
                 )}
@@ -106,10 +116,12 @@ export default function CategorySidebar({
               {/* Subcategories */}
               {isExpanded && category.subcategories.length > 0 && (
                 <div className="ml-4 mt-1 space-y-1">
-                  {category.subcategories.map((subcategory) => (
+                  {category.subcategories.map(subcategory => (
                     <button
                       key={subcategory.id}
-                      onClick={() => onCategorySelect(category.slug, subcategory.slug)}
+                      onClick={() =>
+                        onCategorySelect(category.slug, subcategory.slug)
+                      }
                       className={`w-full text-left px-3 py-1 rounded-md text-sm transition-colors ${
                         selectedSubcategory === subcategory.slug
                           ? 'bg-blue-50 text-blue-600'

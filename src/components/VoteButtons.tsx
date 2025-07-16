@@ -118,16 +118,31 @@ export default function VoteButtons({
             : 'text-gray-600 hover:bg-gray-100'
         } ${!session ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
-        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" suppressHydrationWarning>
-          <path fillRule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
+        <svg
+          className="w-4 h-4"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          suppressHydrationWarning
+        >
+          <path
+            fillRule="evenodd"
+            d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z"
+            clipRule="evenodd"
+          />
         </svg>
         <span className="text-sm font-medium">{upvotes}</span>
       </button>
 
       {/* Net Score */}
-      <span className={`text-sm font-bold ${
-        netScore > 0 ? 'text-green-600' : netScore < 0 ? 'text-red-600' : 'text-gray-600'
-      }`}>
+      <span
+        className={`text-sm font-bold ${
+          netScore > 0
+            ? 'text-green-600'
+            : netScore < 0
+              ? 'text-red-600'
+              : 'text-gray-600'
+        }`}
+      >
         {netScore > 0 ? `+${netScore}` : netScore}
       </span>
 
@@ -141,8 +156,17 @@ export default function VoteButtons({
             : 'text-gray-600 hover:bg-gray-100'
         } ${!session ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
-        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" suppressHydrationWarning>
-          <path fillRule="evenodd" d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z" clipRule="evenodd" />
+        <svg
+          className="w-4 h-4"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          suppressHydrationWarning
+        >
+          <path
+            fillRule="evenodd"
+            d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z"
+            clipRule="evenodd"
+          />
         </svg>
         <span className="text-sm font-medium">{downvotes}</span>
       </button>

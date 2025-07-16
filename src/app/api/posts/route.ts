@@ -17,16 +17,30 @@ export async function GET(request: NextRequest) {
     let whereClause = and(eq(posts.isActive, true));
 
     if (category) {
-      const categoryData = await db.select().from(categories).where(eq(categories.slug, category)).limit(1);
+      const categoryData = await db
+        .select()
+        .from(categories)
+        .where(eq(categories.slug, category))
+        .limit(1);
       if (categoryData[0]) {
-        whereClause = and(whereClause, eq(posts.categoryId, categoryData[0].id));
+        whereClause = and(
+          whereClause,
+          eq(posts.categoryId, categoryData[0].id)
+        );
       }
     }
 
     if (subcategory) {
-      const subcategoryData = await db.select().from(subcategories).where(eq(subcategories.slug, subcategory)).limit(1);
+      const subcategoryData = await db
+        .select()
+        .from(subcategories)
+        .where(eq(subcategories.slug, subcategory))
+        .limit(1);
       if (subcategoryData[0]) {
-        whereClause = and(whereClause, eq(posts.subcategoryId, subcategoryData[0].id));
+        whereClause = and(
+          whereClause,
+          eq(posts.subcategoryId, subcategoryData[0].id)
+        );
       }
     }
 
@@ -86,10 +100,7 @@ export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const {
@@ -111,21 +122,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const excerpt = content.substring(0, 200) + (content.length > 200 ? '...' : '');
+    const excerpt =
+      content.substring(0, 200) + (content.length > 200 ? '...' : '');
 
-    const newPost = await db.insert(posts).values({
-      title,
-      content,
-      excerpt,
-      authorId: parseInt(session.user.id),
-      categoryId,
-      subcategoryId,
-      dealUrl: dealUrl || null,
-      dealPrice: dealPrice || null,
-      originalPrice: originalPrice || null,
-      storeName: storeName || null,
-      isOnline,
-    }).returning();
+    const newPost = await db
+      .insert(posts)
+      .values({
+        title,
+        content,
+        excerpt,
+        authorId: parseInt(session.user.id),
+        categoryId,
+        subcategoryId,
+        dealUrl: dealUrl || null,
+        dealPrice: dealPrice || null,
+        originalPrice: originalPrice || null,
+        storeName: storeName || null,
+        isOnline,
+      })
+      .returning();
 
     return NextResponse.json(
       { message: 'Post created successfully', post: newPost[0] },

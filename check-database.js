@@ -4,7 +4,7 @@ const { Pool } = require('pg');
 async function checkDatabase() {
   console.log('🔍 Checking database connection...');
   console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Set' : 'Not set');
-  
+
   if (!process.env.DATABASE_URL) {
     console.error('❌ DATABASE_URL environment variable is not set');
     process.exit(1);
@@ -17,11 +17,11 @@ async function checkDatabase() {
   try {
     const client = await pool.connect();
     console.log('✅ Database connection successful');
-    
+
     // Test if we can query
     const result = await client.query('SELECT NOW()');
     console.log('✅ Database query successful:', result.rows[0]);
-    
+
     client.release();
     await pool.end();
     console.log('✅ Database check complete');

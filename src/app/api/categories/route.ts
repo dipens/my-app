@@ -32,7 +32,9 @@ export async function GET(request: NextRequest) {
     // Organize subcategories under their parent categories
     const categoriesWithSubs = categoriesData.map(category => ({
       ...category,
-      subcategories: subcategoriesData.filter(sub => sub.categoryId === category.id)
+      subcategories: subcategoriesData.filter(
+        sub => sub.categoryId === category.id
+      ),
     }));
 
     return NextResponse.json({ categories: categoriesWithSubs });

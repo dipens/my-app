@@ -8,9 +8,9 @@ const { execSync } = require('child_process');
 
 try {
   console.log('🌱 Running database seed...');
-  execSync('npx tsx src/db/seed.ts', { 
+  execSync('npx tsx src/db/seed.ts', {
     stdio: 'inherit',
-    env: { ...process.env }
+    env: { ...process.env },
   });
   console.log('✅ Seed completed successfully');
 } catch (error) {

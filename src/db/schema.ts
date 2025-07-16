@@ -1,4 +1,12 @@
-import { pgTable, serial, text, timestamp, integer, boolean, unique } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  serial,
+  text,
+  timestamp,
+  integer,
+  boolean,
+  unique,
+} from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 export const users = pgTable('users', {
@@ -24,16 +32,20 @@ export const categories = pgTable('categories', {
   createdAt: timestamp('created_at').defaultNow(),
 });
 
-export const subcategories = pgTable('subcategories', {
-  id: serial('id').primaryKey(),
-  name: text('name').notNull(),
-  slug: text('slug').notNull(),
-  description: text('description'),
-  categoryId: integer('category_id').references(() => categories.id),
-  createdAt: timestamp('created_at').defaultNow(),
-}, (table) => ({
-  uniqueSlugPerCategory: unique().on(table.slug, table.categoryId),
-}));
+export const subcategories = pgTable(
+  'subcategories',
+  {
+    id: serial('id').primaryKey(),
+    name: text('name').notNull(),
+    slug: text('slug').notNull(),
+    description: text('description'),
+    categoryId: integer('category_id').references(() => categories.id),
+    createdAt: timestamp('created_at').defaultNow(),
+  },
+  table => ({
+    uniqueSlugPerCategory: unique().on(table.slug, table.categoryId),
+  })
+);
 
 export const posts = pgTable('posts', {
   id: serial('id').primaryKey(),
@@ -70,17 +82,21 @@ export const comments = pgTable('comments', {
   updatedAt: timestamp('updated_at').defaultNow(),
 });
 
-export const votes = pgTable('votes', {
-  id: serial('id').primaryKey(),
-  userId: integer('user_id').references(() => users.id),
-  postId: integer('post_id').references(() => posts.id),
-  commentId: integer('comment_id').references(() => comments.id),
-  type: text('type', { enum: ['up', 'down'] }).notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
-}, (table) => ({
-  uniqueUserPost: unique().on(table.userId, table.postId),
-  uniqueUserComment: unique().on(table.userId, table.commentId),
-}));
+export const votes = pgTable(
+  'votes',
+  {
+    id: serial('id').primaryKey(),
+    userId: integer('user_id').references(() => users.id),
+    postId: integer('post_id').references(() => posts.id),
+    commentId: integer('comment_id').references(() => comments.id),
+    type: text('type', { enum: ['up', 'down'] }).notNull(),
+    createdAt: timestamp('created_at').defaultNow(),
+  },
+  table => ({
+    uniqueUserPost: unique().on(table.userId, table.postId),
+    uniqueUserComment: unique().on(table.userId, table.commentId),
+  })
+);
 
 export const userRelations = relations(users, ({ many }) => ({
   posts: many(posts),
@@ -93,13 +109,16 @@ export const categoryRelations = relations(categories, ({ many }) => ({
   posts: many(posts),
 }));
 
-export const subcategoryRelations = relations(subcategories, ({ one, many }) => ({
-  category: one(categories, {
-    fields: [subcategories.categoryId],
-    references: [categories.id],
-  }),
-  posts: many(posts),
-}));
+export const subcategoryRelations = relations(
+  subcategories,
+  ({ one, many }) => ({
+    category: one(categories, {
+      fields: [subcategories.categoryId],
+      references: [categories.id],
+    }),
+    posts: many(posts),
+  })
+);
 
 export const postRelations = relations(posts, ({ one, many }) => ({
   author: one(users, {

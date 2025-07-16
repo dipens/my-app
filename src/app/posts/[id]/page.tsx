@@ -86,11 +86,14 @@ export default function PostDetail() {
     }
   };
 
-  const handleCategoryClick = (categorySlug: string, subcategorySlug?: string) => {
+  const handleCategoryClick = (
+    categorySlug: string,
+    subcategorySlug?: string
+  ) => {
     const params = new URLSearchParams();
     params.set('category', categorySlug);
     if (subcategorySlug) params.set('subcategory', subcategorySlug);
-    
+
     router.push(`/?${params.toString()}`);
   };
 
@@ -118,8 +121,19 @@ export default function PostDetail() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
             <div className="text-red-500 mb-4">
-              <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" suppressHydrationWarning>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              <svg
+                className="mx-auto h-12 w-12"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                suppressHydrationWarning
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+                />
               </svg>
             </div>
             <h2 className="text-xl font-semibold text-gray-900 mb-2">
@@ -139,7 +153,7 @@ export default function PostDetail() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb Navigation */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
@@ -161,7 +175,12 @@ export default function PostDetail() {
               <>
                 <span className="mx-2">/</span>
                 <button
-                  onClick={() => handleCategoryClick(post.category.slug, post.subcategory.slug)}
+                  onClick={() =>
+                    handleCategoryClick(
+                      post.category.slug,
+                      post.subcategory.slug
+                    )
+                  }
                   className="hover:text-blue-600 transition-colors"
                 >
                   {post.subcategory.name}
@@ -181,7 +200,12 @@ export default function PostDetail() {
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center space-x-2">
                 {post.isPinned && (
-                  <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20" suppressHydrationWarning>
+                  <svg
+                    className="w-5 h-5 text-yellow-500"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    suppressHydrationWarning
+                  >
                     <path d="M4 3a1 1 0 011-1h10a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1V3zM3 8a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V8z" />
                   </svg>
                 )}
@@ -189,19 +213,27 @@ export default function PostDetail() {
                   className="w-3 h-3 rounded-full"
                   style={{ backgroundColor: post.category.color }}
                 />
-                <span className="text-sm font-medium text-gray-700">{post.category.name}</span>
+                <span className="text-sm font-medium text-gray-700">
+                  {post.category.name}
+                </span>
                 {post.subcategory && (
                   <>
                     <span className="text-gray-400">•</span>
-                    <span className="text-sm text-gray-600">{post.subcategory.name}</span>
+                    <span className="text-sm text-gray-600">
+                      {post.subcategory.name}
+                    </span>
                   </>
                 )}
               </div>
-              
+
               <div className="flex items-center space-x-2">
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  post.isOnline ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
-                }`}>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    post.isOnline
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-blue-100 text-blue-700'
+                  }`}
+                >
                   {post.isOnline ? 'Online Deal' : 'In-Store Deal'}
                 </span>
                 {session?.user?.email === post.author.username && (
@@ -215,7 +247,9 @@ export default function PostDetail() {
               </div>
             </div>
 
-            <h1 className="text-2xl font-bold text-gray-900 mb-3">{post.title}</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-3">
+              {post.title}
+            </h1>
 
             <div className="flex items-center space-x-4 text-sm text-gray-600">
               <div className="flex items-center space-x-2">
@@ -236,7 +270,9 @@ export default function PostDetail() {
               </div>
               <span>•</span>
               <span suppressHydrationWarning>
-                {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
+                {formatDistanceToNow(new Date(post.createdAt), {
+                  addSuffix: true,
+                })}
               </span>
             </div>
           </div>
@@ -244,21 +280,29 @@ export default function PostDetail() {
           {/* Deal Information */}
           {(post.dealPrice || post.storeName || post.dealUrl) && (
             <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-              <h3 className="text-sm font-medium text-gray-700 mb-3">Deal Information</h3>
+              <h3 className="text-sm font-medium text-gray-700 mb-3">
+                Deal Information
+              </h3>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-6">
                   {post.dealPrice && (
                     <div className="flex items-center space-x-2">
-                      <span className="text-2xl font-bold text-green-600">{post.dealPrice}</span>
+                      <span className="text-2xl font-bold text-green-600">
+                        {post.dealPrice}
+                      </span>
                       {post.originalPrice && (
-                        <span className="text-lg text-gray-500 line-through">{post.originalPrice}</span>
+                        <span className="text-lg text-gray-500 line-through">
+                          {post.originalPrice}
+                        </span>
                       )}
                     </div>
                   )}
                   {post.storeName && (
                     <div>
                       <span className="text-sm text-gray-500">Store:</span>
-                      <span className="ml-1 font-medium text-gray-700">{post.storeName}</span>
+                      <span className="ml-1 font-medium text-gray-700">
+                        {post.storeName}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -279,7 +323,10 @@ export default function PostDetail() {
           {/* Content */}
           <div className="px-6 py-6">
             <div className="prose max-w-none">
-              <MarkdownRenderer content={post.content} className="text-gray-700 leading-relaxed" />
+              <MarkdownRenderer
+                content={post.content}
+                className="text-gray-700 leading-relaxed"
+              />
             </div>
           </div>
 
@@ -292,11 +339,22 @@ export default function PostDetail() {
                 initialDownvotes={post.downvotes}
                 onVoteUpdate={handleVoteUpdate}
               />
-              
+
               <div className="flex items-center space-x-4 text-sm text-gray-600">
                 <div className="flex items-center space-x-1">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" suppressHydrationWarning>
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    suppressHydrationWarning
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                    />
                   </svg>
                   <span>{post.commentCount} comments</span>
                 </div>

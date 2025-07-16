@@ -15,7 +15,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const existingUser = await db.select().from(users).where(eq(users.username, username)).limit(1);
+    const existingUser = await db
+      .select()
+      .from(users)
+      .where(eq(users.username, username))
+      .limit(1);
     if (existingUser[0]) {
       return NextResponse.json(
         { error: 'Username already exists' },
@@ -23,7 +27,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const existingEmail = await db.select().from(users).where(eq(users.email, email)).limit(1);
+    const existingEmail = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
     if (existingEmail[0]) {
       return NextResponse.json(
         { error: 'Email already exists' },
@@ -33,13 +41,16 @@ export async function POST(request: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await db.insert(users).values({
-      username,
-      email,
-      passwordHash: hashedPassword,
-      displayName,
-      provider: 'credentials',
-    }).returning();
+    const newUser = await db
+      .insert(users)
+      .values({
+        username,
+        email,
+        passwordHash: hashedPassword,
+        displayName,
+        provider: 'credentials',
+      })
+      .returning();
 
     return NextResponse.json(
       { message: 'User created successfully', userId: newUser[0].id },

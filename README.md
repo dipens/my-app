@@ -16,10 +16,12 @@ A comprehensive web forum for discovering and sharing the best deals, built with
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - Docker (recommended) or PostgreSQL
 
 ### 1. Clone and Install
+
 ```bash
 git clone <your-repo>
 cd my-app
@@ -29,12 +31,14 @@ npm install
 ### 2. Database Setup (Choose One)
 
 #### Option A: Docker (Recommended)
+
 ```bash
 # Start PostgreSQL with Docker
 npm run db:setup
 ```
 
 #### Option B: Local PostgreSQL
+
 ```bash
 # Install PostgreSQL locally
 brew install postgresql  # macOS
@@ -49,6 +53,7 @@ cp .env.example .env.local
 ```
 
 ### 3. Initialize Database
+
 ```bash
 # Push schema to database
 npm run db:push
@@ -58,6 +63,7 @@ npm run db:seed
 ```
 
 ### 4. Start Development
+
 ```bash
 npm run dev
 ```
@@ -67,14 +73,16 @@ Visit [http://localhost:3000](http://localhost:3000) 🎉
 ## 🗄️ Database
 
 ### Schema Overview
+
 - **users**: Authentication and user profiles
 - **categories**: Main deal categories (Electronics, Fashion, etc.)
 - **subcategories**: Specific subcategories under each category
-- **posts**: Deal posts with pricing and store information  
+- **posts**: Deal posts with pricing and store information
 - **comments**: Threaded comments with replies
 - **votes**: Upvote/downvote tracking
 
 ### Database Commands
+
 ```bash
 npm run db:push      # Push schema changes
 npm run db:seed      # Seed categories
@@ -85,7 +93,9 @@ npm run db:reset     # Reset and reseed database
 ## 🔧 Configuration
 
 ### Environment Variables
+
 Create `.env.local`:
+
 ```bash
 # Database
 DATABASE_URL=postgresql://username:password@localhost:5432/dealhub
@@ -101,6 +111,7 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 ```
 
 ### Social Login Setup
+
 1. Create OAuth apps with providers
 2. Add client IDs and secrets to `.env.local`
 3. Configure redirect URLs to `http://localhost:3000/api/auth/callback/[provider]`
@@ -142,6 +153,7 @@ src/
 ## 🎨 Categories
 
 Pre-seeded categories include:
+
 - 📱 Electronics (Smartphones, Laptops, Gaming, etc.)
 - 👕 Clothing & Fashion (Men's, Women's, Shoes, etc.)
 - 🏠 Home & Garden (Furniture, Kitchen, Decor, etc.)
@@ -154,11 +166,13 @@ Pre-seeded categories include:
 ## 🚀 Deployment
 
 ### Vercel (Recommended)
+
 1. Connect your GitHub repository to Vercel
 2. Add environment variables in Vercel dashboard
 3. Deploy automatically on push
 
 ### Database Options for Production
+
 - **Neon**: Free PostgreSQL with excellent Next.js integration
 - **Supabase**: Full backend-as-a-service with PostgreSQL
 - **Railway**: Simple PostgreSQL hosting
@@ -167,9 +181,10 @@ Pre-seeded categories include:
 ## 🛠️ Development
 
 ### Available Scripts
+
 ```bash
 npm run dev          # Start development server
-npm run build        # Build for production  
+npm run build        # Build for production
 npm run start        # Start production server
 npm run lint         # Run ESLint
 npm run db:push      # Push database schema
@@ -178,6 +193,7 @@ npm run db:studio    # Open database GUI
 ```
 
 ### Code Style
+
 - TypeScript for type safety
 - ESLint for code quality
 - Tailwind for consistent styling
@@ -187,16 +203,19 @@ npm run db:studio    # Open database GUI
 ## 🐛 Troubleshooting
 
 ### Database Connection Issues
+
 - Ensure PostgreSQL is running
 - Check DATABASE_URL format
 - Verify credentials and permissions
 
 ### Hydration Errors
+
 - Browser extensions may cause warnings
 - Added suppressHydrationWarning where needed
 - Use client-side rendering guards
 
 ### Authentication Issues
+
 - Check NEXTAUTH_SECRET is set
 - Verify social provider credentials
 - Ensure callback URLs are correct
@@ -212,7 +231,7 @@ npm run db:studio    # Open database GUI
 
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes  
+3. Make your changes
 4. Add tests if applicable
 5. Submit a pull request
 

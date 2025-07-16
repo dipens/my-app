@@ -9,5 +9,5 @@ const NoSSR = ({ children }: { children: ReactNode }) => {
 
 export default dynamic(() => Promise.resolve(NoSSR), {
   ssr: false,
-  loading: () => <div className="animate-pulse bg-gray-200 h-4 rounded"></div>
+  loading: () => <div className="animate-pulse bg-gray-200 h-4 rounded"></div>,
 });
